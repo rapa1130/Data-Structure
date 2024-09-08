@@ -43,3 +43,7 @@
 .vs/DataStructure/v17/ipch/AutoPCH/5307528bb3c81285/MAIN.ipch
 .vs/DataStructure/v17/ipch/AutoPCH/de9b58326504e536/POLYNOMIAL.ipch
 .vs/DataStructure/v17/ipch/AutoPCH/f5d14036cb6d4aa6/POLYNOMIAL.ipch
+.vscode/c_cpp_properties.json
+.vscode/launch.json
+.vscode/tasks.json
+.vscode/settings.json

@@ -1,0 +1,2 @@
+예시)
+g++ -std=c++14 -Wall Main.cpp Polynomial.cpp -o test.out
