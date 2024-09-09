@@ -4,10 +4,18 @@ using namespace std;
 
 
 int main() {
-    SparseMatrix sm(3,4);
-    sm.NewTerm(2,1,99);
-    sm.NewTerm(0,1,7);
-    cout<<sm;
-    sm=sm.FastTranspose();
-    cout<<sm;
+    SparseMatrix sm1(3,3),sm2(3,3);
+    sm1.NewTerm(0,0,1);
+    sm1.NewTerm(1,0,1);
+    sm1.NewTerm(2,0,1);
+    
+    sm2.NewTerm(0,0,1);
+    sm2.NewTerm(0,1,1);
+    sm2.NewTerm(0,2,1);
+
+    cout<<sm1<<endl;
+    cout<<"곱하기"<<endl;
+    cout<<sm2<<endl;
+    SparseMatrix multiplied= sm1.Mul(sm2);
+    cout<<multiplied<<endl;
 }

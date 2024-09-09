@@ -64,9 +64,61 @@ SparseMatrix SparseMatrix::Add(const SparseMatrix &b) const
     return SparseMatrix();
 }
 
-SparseMatrix SparseMatrix::Mul(const SparseMatrix &b) const
+SparseMatrix SparseMatrix::Mul(const SparseMatrix &b)
 {
-    return SparseMatrix();
+    SparseMatrix multiplied(rows,b.cols);
+    SparseMatrix bTransposed=b.FastTranspose();
+    using std::cout;
+    using std::endl;
+    
+    if(terms == capacity){ ChangeSizeID(terms+1);}
+    bTransposed.ChangeSizeID(bTransposed.terms+1);
+    sm[terms].row=rows;
+    bTransposed.sm[bTransposed.terms].row=b.cols;
+    bTransposed.sm[bTransposed.terms].col=-1;
+
+    int currRowIndex = 0;
+    int currRowBegin=0;
+    int currRowA = sm[0].row;
+    int sum=0;
+   
+    while(currRowIndex < terms){
+        int currColIndex=0;
+        int currColB=bTransposed.sm[0].row;
+        while(currColIndex <= b.terms){
+            if(currRowA != sm[currRowIndex].row){
+                multiplied.StoreSum(sum,currRowA,currColB);
+                sum=0;
+                currRowIndex=currRowBegin;
+                while(currColB == bTransposed.sm[currColIndex].row){
+                    currColIndex++;
+                }
+                currColB=bTransposed.sm[currColIndex].row;
+            }
+            else if(currColB != bTransposed.sm[currColIndex].row){
+                multiplied.StoreSum(sum,currRowA,currColB);
+                sum=0;
+                currRowIndex=currRowBegin;
+                currColB=bTransposed.sm[currColIndex].row;
+            }
+            else if(sm[currRowIndex].col < bTransposed.sm[currColIndex].col){
+                currRowIndex++;
+            }
+            else if(sm[currRowIndex].col > bTransposed.sm[currColIndex].col){
+                currColIndex++;
+            }
+            else{ //sm[currRowIndex].col == bTransposed.sm[currColIndex].col
+                sum+=sm[currRowIndex].val * bTransposed.sm[currColIndex].val;
+                currRowIndex++; currColIndex++;
+            }
+        }
+        while(currRowA==sm[currRowIndex].row){
+            currRowIndex++;
+        }
+        currRowBegin = currRowIndex;
+        currRowA = sm[currRowIndex].row;
+    }
+    return multiplied;
 }
 
 void SparseMatrix::NewTerm(int row, int col, int val)
@@ -79,6 +131,28 @@ void SparseMatrix::NewTerm(int row, int col, int val)
         sm=temp;
     }
     sm[terms++]=MatrixTerm(col,row,val);
+}
+
+void SparseMatrix::StoreSum(int sum, int row, int col)
+{
+    if(sum!=0){
+        if(terms>=capacity){
+            ChangeSizeID(capacity * 2);
+        }
+        sm[terms++] = MatrixTerm(col,row,sum);
+    }
+}
+
+void SparseMatrix::ChangeSizeID(const int newSize)
+{
+    if(terms>newSize){
+        throw "New size must be <= number of terms";
+    }
+    MatrixTerm* temp=new MatrixTerm[newSize];
+    copy(sm,sm+terms,temp);
+    delete[] sm;
+    sm=temp;
+    capacity=newSize;
 }
 
 ostream &operator<<(ostream &os, const SparseMatrix &sm)
