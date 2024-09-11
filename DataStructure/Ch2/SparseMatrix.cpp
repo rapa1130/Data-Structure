@@ -34,16 +34,14 @@ SparseMatrix SparseMatrix::Transpose() const
 SparseMatrix SparseMatrix::FastTranspose() const
 {
     int* start=new int[cols];
-    int* size=new int[cols];
 
-    fill(size,size+cols,0);
     for(int i=0;i<terms;i++){
-        size[sm[i].col]++;
+        start[sm[i].col]++;
     }
 
     start[0]=0;
     for(int i=1;i<cols;i++){
-        start[i]=start[i-1]+size[i-1];
+        start[i]+=start[i-1];
     }
 
     SparseMatrix transposed(cols,rows,terms);
@@ -55,7 +53,6 @@ SparseMatrix SparseMatrix::FastTranspose() const
         start[sm[i].col]++;
     }
     delete[] start;
-    delete[] size;
     return transposed;
 }
 
@@ -93,7 +90,7 @@ SparseMatrix SparseMatrix::Mul(const SparseMatrix &b)
                 while(currColB == bTransposed.sm[currColIndex].row){
                     currColIndex++;
                 }
-                currColB=bTransposed.sm[currColIndex].row;
+                currColB = bTransposed.sm[currColIndex].row;
             }
             else if(currColB != bTransposed.sm[currColIndex].row){
                 multiplied.StoreSum(sum,currRowA,currColB);
@@ -108,7 +105,81 @@ SparseMatrix SparseMatrix::Mul(const SparseMatrix &b)
                 currColIndex++;
             }
             else{ //sm[currRowIndex].col == bTransposed.sm[currColIndex].col
-                sum+=sm[currRowIndex].val * bTransposed.sm[currColIndex].val;
+                sum += sm[currRowIndex].val * bTransposed.sm[currColIndex].val;
+                currRowIndex++; currColIndex++;
+            }
+        }
+        while(currRowA==sm[currRowIndex].row){
+            currRowIndex++;
+        }
+        currRowBegin = currRowIndex;
+        currRowA = sm[currRowIndex].row;
+    }
+    return multiplied;
+}
+
+SparseMatrix SparseMatrix::Mul2(SparseMatrix &b)
+{
+    SparseMatrix multiplied(rows,b.cols);
+    using std::cout;
+    using std::endl;
+    
+
+    if(terms == capacity){ ChangeSizeID(terms+1);}
+    b.ChangeSizeID(b.terms+1);
+    sm[terms].row=rows;
+    b.sm[b.terms].row=b.cols;
+    b.sm[b.terms].col=-1;
+
+    int currRowIndex = 0;
+    int currRowBegin=0;
+    int currRowA = sm[0].row;
+
+    int* size=new int[b.cols];
+    int* start=new int[b.cols];
+    fill(size,size+b.cols,0);
+    for(int i=0;i<b.terms;i++){
+        size[b.sm[i].col]++;
+    }
+    start[0]=0;
+    for(int i=1;i<b.cols;i++){
+        start[i]=start[i-1]+size[i-1];
+    }
+
+    int* termsOrderByCol=new int[b.cols];
+    for(int i=0;i<b.terms;i++){
+        termsOrderByCol[start[b.sm[i].col]++]=i;
+    }
+   
+    while(currRowIndex < terms){
+        int currColIndex=0;
+        int currColB=b.sm[termsOrderByCol[0]].col;
+        int sum=0;
+        
+        while(currColIndex <= b.terms){
+            if(currRowA != sm[currRowIndex].row){
+                multiplied.StoreSum(sum,currRowA,currColB);
+                sum=0;
+                currRowIndex=currRowBegin;
+                while(currColB == b.sm[termsOrderByCol[currColIndex]].col){
+                    currColIndex++;
+                }
+                currColB = b.sm[termsOrderByCol[currColIndex]].col;
+            }
+            else if(currColB != b.sm[termsOrderByCol[currColIndex]].col){
+                multiplied.StoreSum(sum,currRowA,currColB);
+                sum=0;
+                currRowIndex=currRowBegin;
+                currColB=b.sm[termsOrderByCol[currColIndex]].col;
+            }
+            else if(sm[currRowIndex].col < b.sm[termsOrderByCol[currColIndex]].row){
+                currRowIndex++;
+            }
+            else if(sm[currRowIndex].col > b.sm[termsOrderByCol[currColIndex]].row){
+                currColIndex++;
+            }
+            else{ //sm[currRowIndex].col == bTransposed.sm[currColIndex].col
+                sum += sm[currRowIndex].val * b.sm[termsOrderByCol[currColIndex]].val;
                 currRowIndex++; currColIndex++;
             }
         }

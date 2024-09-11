@@ -30,6 +30,7 @@ public:
     SparseMatrix FastTranspose() const;
     SparseMatrix Add(const SparseMatrix& b) const;
     SparseMatrix Mul(const SparseMatrix& b) ;
+    SparseMatrix Mul2(SparseMatrix& b) ;
     friend ostream& operator<<(ostream& os,const SparseMatrix& sm);
     friend istream& operator>>(istream& is,SparseMatrix& sm);
     void NewTerm(int row,int col,int val);

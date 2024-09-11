@@ -16,6 +16,7 @@ int main() {
     cout<<sm1<<endl;
     cout<<"곱하기"<<endl;
     cout<<sm2<<endl;
-    SparseMatrix multiplied= sm1.Mul(sm2);
+    SparseMatrix multiplied= sm1.Mul2(sm2);
     cout<<multiplied<<endl;
+
 }
