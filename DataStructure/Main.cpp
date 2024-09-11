@@ -1,22 +1,26 @@
 #include<iostream>
-#include"Ch2/SparseMatrix.h"
+#include"Ch2/BitSparseMatrix.h"
 using namespace std;
 
 
 int main() {
-    SparseMatrix sm1(3,3),sm2(3,3);
-    sm1.NewTerm(0,0,1);
-    sm1.NewTerm(1,0,1);
-    sm1.NewTerm(2,0,1);
+    BitSparseMatrix bsm1(6,6),bsm2(6,6);
     
-    sm2.NewTerm(0,0,1);
-    sm2.NewTerm(0,1,1);
-    sm2.NewTerm(0,2,1);
+    bsm1.NewTerm(0,1,15);
+    bsm1.NewTerm(0,2,10);
+    
+    bsm1.PrintBits();
+    bsm1.PrintSm();
+    
+    bsm2.NewTerm(0,1,4);
+    bsm2.NewTerm(0,3,22);
+    bsm2.NewTerm(0,0,2);
 
-    cout<<sm1<<endl;
-    cout<<"곱하기"<<endl;
-    cout<<sm2<<endl;
-    SparseMatrix multiplied= sm1.Mul2(sm2);
-    cout<<multiplied<<endl;
-
+    bsm2.PrintBits();
+    bsm2.PrintSm();
+    
+    cout<<"[계산결과]"<<endl;
+    BitSparseMatrix bsmAdd=bsm1+bsm2;
+    bsmAdd.PrintBits();
+    bsmAdd.PrintSm();
 }
