@@ -136,4 +136,5 @@ void BitSparseMatrix::PrintSm() const
 
 ostream &operator<<(ostream &os, const BitSparseMatrix &sm)
 {
+    return os;
 }

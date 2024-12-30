@@ -252,6 +252,7 @@ istream &operator>>(istream &is, SparseMatrix &sm)
     int row,col,val;
     is>>row>>col>>val;
     sm.NewTerm(row,col,val);
+    return is;
 }
 
 MatrixTerm::MatrixTerm(int col, int row, int val) 
