@@ -1,0 +1,1 @@
+#include"LinkedStack_Inherit.h"

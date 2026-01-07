@@ -1,9 +1,11 @@
-#include"Ch2/VectorPolynomial.h"
+#include <iostream>
+#include "Ch02_Array/GeneralArray.h"
 using namespace std;
-int main() {
-	VectorPolynomial pol1;
-	pol1.NewTerm(Term(1, 3));
-	pol1.NewTerm(Term(2, 3));
-	pol1.NewTerm(Term(4, 3));
-	cout << pol1;
+
+int main(){
+    GeneralArray arr;
+    arr[3]= 8;
+    cout<<arr;
+    cout<<arr.GetSize()<<endl;
+    return 0;
 }

@@ -23,8 +23,9 @@ public:
 	VectorPolynomial operator+(const VectorPolynomial& right)const ;
 	//multiply
 	VectorPolynomial operator*(const VectorPolynomial& right)const;
+	VectorPolynomial& operator=(const VectorPolynomial& right);
 	//eval
-	float eval()const;
+	float eval(float x)const;
 	//Constructor
 	VectorPolynomial();
 	//Destructor
