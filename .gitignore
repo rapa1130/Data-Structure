@@ -47,3 +47,8 @@
 .vscode/launch.json
 .vscode/tasks.json
 .vscode/settings.json
+DataStructure/Main
+DataStructure.sln
+DataStructure/DataStructure.vcxproj
+DataStructure/DataStructure.vcxproj.filters
+DataStructure/DataStructure.vcxproj.user
